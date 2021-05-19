@@ -6,9 +6,9 @@ networks:
 
 services:
   certbot:
+    image: tls-refresh-certbot
     depends_on:
       - gateway
-    image: tls-refresh-certbot
     networks:
       - tls-refresh
     volumes:
