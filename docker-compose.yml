@@ -7,8 +7,6 @@ networks:
 services:
   certbot:
     image: tls-refresh-certbot
-    depends_on:
-      - gateway
     networks:
       - tls-refresh
     volumes:
@@ -19,6 +17,7 @@ services:
   gateway:
     image: haproxy:2.4.0
     depends_on:
+      - certbot
       - server
       # other services
     networks:

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sleep 10
+
 source /etc/tls-refresh/.env
 certfile="/etc/haproxy/certs/$domain.pem"
 
