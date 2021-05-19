@@ -1,10 +1,7 @@
 #!/bin/bash
 
 source /etc/tls-refresh/.env
-certsdir="/etc/haproxy/certs/"
-certfile="$certsdir/$domain.pem"
-
-rm -f "$certsdir/placeholder.pem"
+certfile="/etc/haproxy/certs/$domain.pem"
 
 if [ -f "$certfile" ]; then
   echo "Certificate exists, attempting to renew..."
