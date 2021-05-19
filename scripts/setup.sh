@@ -31,12 +31,12 @@ docker build \
   .
 
 echo "Built 'tls-refresh-server' image"
-echo "Creating 'tls-refresh' docker network"
+echo "Creating 'tls-refresh' docker network..."
 
 docker network create tls-refresh
 
 echo "Created 'tls-refresh' docker network"
-echo "Generating self-signed, placeholder certificate"
+echo "Generating self-signed, placeholder certificate..."
 
 cd etc/haproxy/certs
 
@@ -46,10 +46,10 @@ openssl req \
   -newkey rsa:3072 \
   -nodes \
   -keyout key.pem \
-  -out "$domain".pem \
+  -out placeholder.pem \
   -subj "/CN=$domain/"
 
-cat key.pem >> "$domain".pem
+cat key.pem >> placeholder.pem
 rm key.pem
 
 echo "Generated certificate"
