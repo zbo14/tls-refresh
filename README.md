@@ -1,5 +1,11 @@
 # tls-refresh
 
+## Dependencies
+
+* Docker
+* Compose
+* OpenSSL
+
 ## Resources
 
 * https://certbot.eff.org/docs/using.html
