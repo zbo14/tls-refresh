@@ -38,11 +38,6 @@ docker build \
   .
 
 echo "Built 'tls-refresh-server' image"
-echo "Creating 'tls-refresh' docker network..."
-
-docker network create tls-refresh
-
-echo "Created 'tls-refresh' docker network"
 echo "Generating self-signed, placeholder certificate..."
 
 mkdir -p etc/haproxy/certs

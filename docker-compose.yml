@@ -2,7 +2,6 @@ version: '3.8'
 
 networks:
   tls-refresh:
-    external: true
     name: tls-refresh
 
 services:
