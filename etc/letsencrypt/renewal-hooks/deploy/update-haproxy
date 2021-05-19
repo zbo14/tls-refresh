@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source /etc/tls-refresh/.env
+certfile="/etc/haproxy/certs/$domain.pem"
+haproxycert="/usr/local/etc/haproxy/certs/$domain.pem"
+
+cat \
+  /etc/letsencrypt/live/"$domain"/fullchain.pem \
+  /etc/letsencrypt/live/"$domain"/privkey.pem \
+  > "$certfile"
+
+echo "Updating HAProxy..."
+
+echo -e "set ssl cert $haproxycert <<\n$(cat "$certfile")\n" | socat tcp-connect:gateway:9999 -
+echo "show ssl cert *$haproxycert" | socat tcp-connect:gateway:9999 -
+echo "commit ssl cert $haproxycert" | socat tcp-connect:gateway:9999 -
+echo "show ssl cert $haproxycert" | socat tcp-connect:gateway:9999 -
+
+echo "Updated HAProxy"

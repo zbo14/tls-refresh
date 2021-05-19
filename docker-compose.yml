@@ -1,0 +1,41 @@
+version: '3.8'
+
+networks:
+  tls-refresh:
+    external: true
+    name: tls-refresh
+
+services:
+  certbot:
+    depends_on:
+      - gateway
+    image: tls-refresh-certbot
+    networks:
+      - tls-refresh
+    volumes:
+      - $PWD/etc/haproxy/certs:/etc/haproxy/certs
+      - $PWD/etc/letsencrypt/renewal-hooks/deploy:/etc/letsencrypt/renewal-hooks/deploy:ro
+      - $PWD/etc/tls-refresh:/etc/tls-refresh:ro
+
+  gateway:
+    image: haproxy:2.4.0
+    depends_on:
+      - server
+      # other services
+    networks:
+      - tls-refresh
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - $PWD/etc/haproxy:/usr/local/etc/haproxy:ro
+      - $PWD/etc/tls-refresh:/etc/tls-refresh:ro
+
+  server:
+    image: tls-refresh-server
+    networks:
+      - tls-refresh
+    restart: always
+
+  # specify any other services
