@@ -1,17 +1,24 @@
 #!/bin/bash
 
 cd "$(dirname "$0")"/..
-source etc/tls-refresh/.env
+
+read -rp "Please enter your domain: " domain
 
 if [ -z "$domain" ]; then
-  echo "Must specify 'domain' in etc/tls-refresh/.env"
+  echo "You must provide a domain"
   exit 1
 fi
 
+read -rp "Please enter your email: " email
+
 if [ -z "$email" ]; then
-  echo "Must specify 'email' in etc/tls-refresh/.env"
+  echo "You must provide an email"
   exit 1
 fi
+
+mkdir -p etc/tls-refresh
+echo "domain=$domain" > etc/tls-refresh/.env
+echo "email=$email" >> etc/tls-refresh/.env
 
 echo "Building 'tls-refresh-certbot' image..."
 
@@ -38,6 +45,7 @@ docker network create tls-refresh
 echo "Created 'tls-refresh' docker network"
 echo "Generating self-signed, placeholder certificate..."
 
+mkdir -p etc/haproxy/certs
 cd etc/haproxy/certs
 
 openssl req \
