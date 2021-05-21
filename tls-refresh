@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"
+
+for script in scripts/*; do
+  if [ "$script" == scripts/"$1".sh ]; then
+    bash "$script"
+    exit
+  fi
+done
+
+echo "Unknown command: '$1'"
+exit 1

@@ -1,3 +1,4 @@
 .DS_Store
 etc/haproxy/certs/
+etc/haproxy/haproxy.cfg
 etc/tls-refresh/

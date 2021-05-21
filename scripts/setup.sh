@@ -28,43 +28,13 @@ if [ -z "$email" ]; then
   echo "email=$email" >> etc/tls-refresh/.env
 fi
 
-sed -i "s/<domain>/$domain/" etc/haproxy/haproxy.cfg
+sed "s/<domain>/$domain/" etc/haproxy/example.haproxy.cfg > etc/haproxy/haproxy.cfg
 
-echo "Building 'tls-refresh-certbot' image..."
+cd scripts
 
-docker build \
-  -f certbot.Dockerfile \
-  --no-cache \
-  -t tls-refresh-certbot \
-  .
+bash build-certbot-image.sh &
+bash build-server-image.sh &
 
-echo "Built 'tls-refresh-certbot' image"
-echo "Building 'tls-refresh-server' image..."
+wait
 
-docker build \
-  -f server.Dockerfile \
-  --no-cache \
-  -t tls-refresh-server \
-  .
-
-echo "Built 'tls-refresh-server' image"
-echo "Generating self-signed certificate..."
-
-mkdir -p etc/haproxy/certs
-cd etc/haproxy/certs
-
-openssl req \
-  -x509 \
-  -days 3650 \
-  -newkey rsa:3072 \
-  -nodes \
-  -keyout key.pem \
-  -out "$domain".pem \
-  -subj "/CN=$domain/"
-
-cat key.pem >> "$domain".pem
-rm key.pem
-
-touch placeholder
-
-echo "Generated certificate"
+bash generate-cert.sh
