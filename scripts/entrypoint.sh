@@ -1,9 +1,10 @@
 #!/bin/bash
 
-sleep 10
+sleep 5
 
 source /etc/tls-refresh/.env
 certfile="/etc/haproxy/certs/$domain.pem"
+haproxycert="/usr/local/etc/haproxy/certs/$domain.pem"
 
 if [ -f "$certfile" ]; then
   echo "Certificate exists, attempting to renew..."
@@ -25,14 +26,15 @@ certbot certonly \
 
 echo "Generated certificate"
 
-cat \
-  /etc/letsencrypt/live/"$domain"/fullchain.pem \
-  /etc/letsencrypt/live/"$domain"/privkey.pem \
-  > "$certfile"
+certdata="$(
+  cat \
+    /etc/letsencrypt/live/"$domain"/fullchain.pem \
+    /etc/letsencrypt/live/"$domain"/privkey.pem \
+)"
 
 echo "Updating HAProxy..."
 
-echo -e "set ssl cert $haproxycert <<\n$(cat "$certfile")\n" | socat tcp-connect:gateway:9999 -
+echo -e "set ssl cert $haproxycert <<\n$certdata\n" | socat tcp-connect:gateway:9999 -
 echo "show ssl cert *$haproxycert" | socat tcp-connect:gateway:9999 -
 echo "commit ssl cert $haproxycert" | socat tcp-connect:gateway:9999 -
 echo "show ssl cert $haproxycert" | socat tcp-connect:gateway:9999 -
