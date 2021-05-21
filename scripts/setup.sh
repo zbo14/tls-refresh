@@ -14,7 +14,7 @@ if [ -z "$domain" ]; then
     exit 1
   fi
 
-  echo "domain=$domain" > etc/tls-refresh/.env
+  echo "domain=$domain" >> etc/tls-refresh/.env
 fi
 
 if [ -z "$email" ]; then
@@ -27,6 +27,8 @@ if [ -z "$email" ]; then
 
   echo "email=$email" >> etc/tls-refresh/.env
 fi
+
+sed -i "s/<domain>/$domain/" etc/haproxy/haproxy.cfg
 
 echo "Building 'tls-refresh-certbot' image..."
 
@@ -46,7 +48,7 @@ docker build \
   .
 
 echo "Built 'tls-refresh-server' image"
-echo "Generating self-signed, placeholder certificate..."
+echo "Generating self-signed certificate..."
 
 mkdir -p etc/haproxy/certs
 cd etc/haproxy/certs
@@ -57,10 +59,12 @@ openssl req \
   -newkey rsa:3072 \
   -nodes \
   -keyout key.pem \
-  -out placeholder.pem \
+  -out "$domain".pem \
   -subj "/CN=$domain/"
 
-cat key.pem >> placeholder.pem
+cat key.pem >> "$domain".pem
 rm key.pem
+
+touch placeholder
 
 echo "Generated certificate"

@@ -3,15 +3,18 @@
 sleep 5
 
 source /etc/tls-refresh/.env
-certfile="/etc/haproxy/certs/$domain.pem"
+certsdir="/etc/haproxy/certs"
+certpath="$certsdir/$domain.pem"
+placeholder="$certsdir/placeholder"
 haproxycert="/usr/local/etc/haproxy/certs/$domain.pem"
 
-if [ -f "$certfile" ]; then
+if ! [ -f "$placeholder" ]; then
   echo "Certificate exists, attempting to renew..."
   certbot renew --http-01-port 8080
-  echo "Renewed certificate"
   exit
 fi
+
+rm "$placeholder"
 
 echo "Certificate doesn't exist, generating one now..."
 
@@ -26,11 +29,12 @@ certbot certonly \
 
 echo "Generated certificate"
 
-certdata="$(
-  cat \
-    /etc/letsencrypt/live/"$domain"/fullchain.pem \
-    /etc/letsencrypt/live/"$domain"/privkey.pem \
-)"
+cat \
+  /etc/letsencrypt/live/"$domain"/fullchain.pem \
+  /etc/letsencrypt/live/"$domain"/privkey.pem \
+  > "$certpath"
+
+certdata="$(cat "$certpath")"
 
 echo "Updating HAProxy..."
 
