@@ -31,8 +31,8 @@ echo "Generated certificate"
 
 cat \
   /etc/letsencrypt/live/"$domain"/fullchain.pem \
-  /etc/letsencrypt/live/"$domain"/privkey.pem \
-  > "$certpath"
+  /etc/letsencrypt/live/"$domain"/privkey.pem |
+  sed '/^$/d' > "$certpath"
 
 certdata="$(cat "$certpath")"
 

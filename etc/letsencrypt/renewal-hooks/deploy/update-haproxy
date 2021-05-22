@@ -6,10 +6,10 @@ haproxycert="/usr/local/etc/haproxy/certs/$domain.pem"
 
 cat \
   /etc/letsencrypt/live/"$domain"/fullchain.pem \
-  /etc/letsencrypt/live/"$domain"/privkey.pem \
-  > "$certpath"
+  /etc/letsencrypt/live/"$domain"/privkey.pem |
+  sed '/^$/d' > "$certpath"
 
-certdata="$(cat certpath)"
+certdata="$(cat "$certpath")"
 
 echo "Updating HAProxy..."
 
