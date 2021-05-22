@@ -38,3 +38,17 @@ bash build-server-image.sh &
 wait
 
 bash generate-cert.sh
+
+cd ..
+
+echo "#!/bin/bash
+
+/usr/bin/docker run \
+  --network=tls-refresh \
+  -v $PWD/etc/haproxy/certs:/etc/haproxy/certs \
+  -v $PWD/etc/letsencrypt/renewal-hooks/deploy:/etc/letsencrypt/renewal-hooks/deploy:ro \
+  -v $PWD/etc/tls-refresh:/etc/tls-refresh:ro \
+  tls-refresh-certbot" |
+  sudo tee /etc/cron.weekly/tls-refresh-certbot
+
+sudo chmod +x /etc/cron.weekly/tls-refresh-certbot
