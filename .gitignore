@@ -2,3 +2,4 @@
 etc/haproxy/certs/
 etc/haproxy/haproxy.cfg
 etc/tls-refresh/
+logs

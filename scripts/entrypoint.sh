@@ -32,6 +32,7 @@ echo "Generated certificate"
 cat \
   /etc/letsencrypt/live/"$domain"/fullchain.pem \
   /etc/letsencrypt/live/"$domain"/privkey.pem |
+  # empty lines cause HAProxy to error!
   sed '/^$/d' > "$certpath"
 
 certdata="$(cat "$certpath")"

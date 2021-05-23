@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"/..
 
-mkdir -p etc/tls-refresh
+mkdir -p etc/tls-refresh logs
 touch etc/tls-refresh/.env
 source etc/tls-refresh/.env
 
@@ -41,14 +41,18 @@ bash generate-cert.sh
 
 cd ..
 
-echo "#!/bin/bash
+echo "#!/bin/sh
 
 /usr/bin/docker run \
+  --name tls-refresh-certbot \
   --network=tls-refresh \
+  --rm \
   -v $PWD/etc/haproxy/certs:/etc/haproxy/certs \
   -v $PWD/etc/letsencrypt/renewal-hooks/deploy:/etc/letsencrypt/renewal-hooks/deploy:ro \
   -v $PWD/etc/tls-refresh:/etc/tls-refresh:ro \
-  tls-refresh-certbot" |
+  tls-refresh-certbot \
+  > $PWD/logs/tls-refresh-certbot.out \
+  2> $PWD/logs/tls-refresh-certbot.err" |
   sudo tee /etc/cron.weekly/tls-refresh-certbot
 
 sudo chmod +x /etc/cron.weekly/tls-refresh-certbot
