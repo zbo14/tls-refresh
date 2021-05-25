@@ -85,7 +85,7 @@ frontend gateway
   bind *:80
   bind *:443 ssl crt /usr/local/etc/haproxy/certs/'"$domain"'.pem
   acl is_certbot path_beg /.well-known/acme-challenge/
-  http-request redirect scheme https code 301 if !{ is_certbot } !{ ssl_fc }
+  http-request redirect scheme https code 301 if !is_certbot !{ ssl_fc }
   use_backend certbot if is_certbot
   default_backend '"$service_name"'
 
