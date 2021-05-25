@@ -66,9 +66,11 @@ This configuration has a few advantages:
 * The services can communicate with each other via DNS names
 * HAProxy is the only service with exposed ports; everything else sits behind it
 
-A weekly cron job runs cerbot in a Docker container on the `tls-refresh` network to renew the TLS certificate, if need be. On successful renewal, a [deploy hook](./etc/letsencrypt/renewal-hooks/deploy/update-haproxy) executes and updates HAProxy's TLS settings to use the new certificate.
+A weekly cron job runs cerbot in a Docker container on the `tls-refresh` network to renew the TLS certificate, if need be. On successful renewal, a [deploy hook](./etc/letsencrypt/renewal-hooks/deploy/update-haproxy) executes and updates HAProxy's TLS settings to use the new certificate. You can view the renewal logs at `./logs/tls-refresh-certbot.out` and `./logs/tls-refresh-certbot.err`.
 
 **Note:** the certbot containers *aren't* persistent like the HAProxy gateway or web server; they should create or renew the certificate and then exit.
+
+HAProxy automatically redirects HTTP traffic (port 80) to the HTTPS endpoint (port 443) *unless* the requested path is `/.well-known/acme-challenge/`. This route allows [Let's Encrypt](https://letsencrypt.org/) to validate control of your domain and provision a certificate.
 
 ## Contributing
 
