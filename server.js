@@ -8,8 +8,8 @@ server
   .on('error', console.error)
   .on('request', (req, resp) => {
     resp.end(
-      'This is a demo server for `tls-refresh`\n\n' +
-      'Check it out at https://github.com/zbo14/tls-refresh'
+      'This is a demo server that ships with `tls-refresh`\n\n' +
+      'Check out the project >> https://github.com/zbo14/tls-refresh'
     )
   })
   .listen(9000, '0.0.0.0', () => {
