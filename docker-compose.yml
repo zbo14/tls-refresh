@@ -19,7 +19,6 @@ services:
     depends_on:
       - certbot
       - server
-      # other services
     networks:
       - tls-refresh
     ports:
@@ -35,5 +34,3 @@ services:
     networks:
       - tls-refresh
     restart: always
-
-  # specify any other services

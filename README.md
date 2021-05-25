@@ -1,6 +1,10 @@
 # tls-refresh
 
-Auto-generate and refresh your TLS certificates for HAProxy using [certbot](https://certbot.eff.org/)!
+Auto-generate and renew your TLS certificates for [HAProxy](https://www.haproxy.org/) using [certbot](https://certbot.eff.org/)!
+
+## Overview
+
+HAProxy is very handy as a reverse proxy and well-suited for load balancing across several backend servers. It can also perform TLS termination so there's no need to update TLS certificates on each backend server. I thought it might be cool to have a Dockerized HAProxy + certbot configuration that would auto-renew certificates and leverage HAProxy's [runtime API](https://www.haproxy.com/blog/dynamic-configuration-haproxy-runtime-api/) to update TLS credentials without restarting the service and introducing downtime.
 
 ## Dependencies
 
@@ -10,16 +14,6 @@ Auto-generate and refresh your TLS certificates for HAProxy using [certbot](http
 * [Compose](https://docs.docker.com/compose/install/)
 
 ## Usage
-
-### Configuration
-
-`tls-refresh` ships with a NodeJS HTTP server that responds to requests with a short note about this project. This is only meant for testing and demo purposes.
-
-You can modify the `services > server` section in the `docker-compose.yml` file to use another HTTP server and name it something more descriptive.
-
-Make sure to modify the final `backend` block in `./etc/haproxy/haproxy.cfg` so it references the correct DNS name for your web service.
-
-TODO: add command for this
 
 ### Setup
 
@@ -33,9 +27,26 @@ This command does the following:
 * Generates self-signed (placeholder) certificate for HAProxy
 * Specifies weekly cron job to check certificate renewal
 
+Your domain and email address are stored in `./etc/tls-refresh/.env` (gitignored).
+
+### Configuration
+
+`tls-refresh` ships with a NodeJS HTTP server that responds to requests with a short note about this project. This is meant for testing and demo purposes to ensure that certificate generation and renewal works.
+
+To substitute your own web service, run `./tls-server configure`. This command prompts for the following service information:
+
+* Docker image (Default: tls-refresh-server)
+* Name (Default: "server")
+* Listening port (Default: 9000)
+* Scale / # of instances (Default: 2)
+
+It then stores this information in `./etc/tls-refresh/.env` and modifies the `docker-compose.yml` and `./etc/haproxy/haproxy.cfg` files accordingly.
+
+Further configuration of `docker-compose.yml` or `haproxy.cfg` must be done manually. Please refer to the appropriate [documentation](#Resources).
+
 ### Start
 
-Start the HAProxy gateway, certbot, and the demo server!
+Start the HAProxy gateway, certbot, and web server!
 
 `$ ./tls-refresh start`
 
@@ -69,4 +80,5 @@ Want to make `tls-refresh` better?
 
 * https://certbot.eff.org/docs/using.html
 * https://cbonte.github.io/haproxy-dconv/2.4/configuration.html
+* https://docs.docker.com/compose/
 * https://www.haproxy.com/blog/dynamic-ssl-certificate-storage-in-haproxy/

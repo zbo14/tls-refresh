@@ -2,4 +2,6 @@
 
 cd "$(dirname "$0")"/..
 
-docker-compose up -d
+source etc/tls-refresh/.env
+
+docker-compose up -d --scale "$service_name"="$service_scale"
