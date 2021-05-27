@@ -1,9 +1,14 @@
 FROM debian:buster
 
-COPY ./scripts/entrypoint.sh /entrypoint.sh
+COPY ./entrypoint /entrypoint
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y certbot socat
+    apt-get install -y certbot socat sudo && \
+    apt-get autoremove -y && \
+    adduser --disabled-password --gecos '' certbot && \
+    echo "certbot ALL=(ALL) NOPASSWD: /entrypoint" > /etc/sudoers
 
-ENTRYPOINT bash -e /entrypoint.sh
+USER certbot
+
+ENTRYPOINT sudo /entrypoint
