@@ -70,7 +70,7 @@ A weekly cron job runs cerbot in a Docker container on the `tls-refresh` network
 
 **Note:** the certbot containers *aren't* persistent like the HAProxy gateway or web server; they should create or renew the certificate and then exit.
 
-HAProxy automatically redirects HTTP traffic (port 80) to the HTTPS endpoint (port 443) *unless* the requested path is `/.well-known/acme-challenge/`. This route allows [Let's Encrypt](https://letsencrypt.org/) to validate control of your domain and provision a certificate.
+HAProxy automatically redirects HTTP traffic (port 80) to the HTTPS endpoint (port 443) *unless* the requested path begins with `/.well-known/acme-challenge/`. This route allows [Let's Encrypt](https://letsencrypt.org/) to validate control of your domain and provision a certificate.
 
 ## Contributing
 
